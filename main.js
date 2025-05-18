@@ -20,9 +20,19 @@ class Field {
     this._field[0][0] = pathCharacter;
   }
 
-  // print() {
-  //   console.log(this.field.join(''));
-  // }
+  print() {
+    const map = this._field.map((row) => row.join('')).join('\n');
+    console.log(map);
+  }
+
+  isOutOfBounds() {
+    return (
+      this.locationX < 0 ||
+      this.locationY < 0 ||
+      this.locationX >= this._field.length ||
+      this.locationY >= this._field[0].length
+    );
+  }
 
   askQuesion() {
     const answer = prompt('Which way? ').toUpperCase();
