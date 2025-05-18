@@ -7,6 +7,14 @@ const Direction = {
   Right: 'R',
 };
 
+const MESSAGE = {
+  OUT_OF_BOUND: 'This is out of bound',
+  FALL_HOLE: 'You fell down a hole',
+  FOUND_HAT: 'Congrat! You found a hat',
+  INVALID_DIRECTION: 'Invalid direction. Please enter U, D, L, or R.',
+  ASK_DIRECTION: 'Which way? ',
+};
+
 const hat = '^';
 const hole = 'O';
 const fieldCharacter = '░';
@@ -21,24 +29,21 @@ class Field {
   }
 
   runGame() {
-    let playing = true;
-    while (playing) {
+    while (true) {
       this.print();
-      this.askQuesion();
+      this.askQuestion();
+
       if (this.isOutOfBounds()) {
-        console.log('This is out of bound');
-        playing = false;
-        break;
+        console.log(MESSAGE.OUT_OF_BOUND);
+        return;
       }
       if (this.isHole()) {
-        console.log('You fell down a hole');
-        playing = false;
-        break;
+        console.log(MESSAGE.FALL_HOLE);
+        return;
       }
       if (this.isHat()) {
-        console.log('Congrat! You found a hat');
-        playing = false;
-        break;
+        console.log(MESSAGE.FOUND_HAT);
+        return;
       }
       this._field[this.locationY][this.locationX] = pathCharacter;
     }
@@ -58,8 +63,8 @@ class Field {
     );
   }
 
-  askQuesion() {
-    const answer = prompt('Which way? ').toUpperCase();
+  askQuestion() {
+    const answer = prompt(MESSAGE.ASK_DIRECTION).toUpperCase();
     switch (answer) {
       case Direction.Up:
         this.locationY -= 1;
@@ -75,7 +80,7 @@ class Field {
         break;
       default:
         console.log('Invalid direction. Please enter U, D, L, or R.');
-        this.askQuesion();
+        this.askQuestion();
         break;
     }
   }
@@ -83,6 +88,7 @@ class Field {
   isHat() {
     return this._field[this.locationY][this.locationX] === hat;
   }
+
   isHole() {
     return this._field[this.locationY][this.locationX] === hole;
   }
