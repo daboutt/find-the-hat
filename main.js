@@ -20,6 +20,30 @@ class Field {
     this._field[0][0] = pathCharacter;
   }
 
+  runGame() {
+    let playing = true;
+    while (playing) {
+      this.print();
+      this.askQuesion();
+      if (this.isOutOfBounds()) {
+        console.log('This is out of bound');
+        playing = false;
+        break;
+      }
+      if (this.isHole()) {
+        console.log('You fell down a hole');
+        playing = false;
+        break;
+      }
+      if (this.isHat()) {
+        console.log('Congrat! You found a hat');
+        playing = false;
+        break;
+      }
+      this._field[this.locationY][this.locationX] = pathCharacter;
+    }
+  }
+
   print() {
     const map = this._field.map((row) => row.join('')).join('\n');
     console.log(map);
@@ -38,10 +62,10 @@ class Field {
     const answer = prompt('Which way? ').toUpperCase();
     switch (answer) {
       case Direction.Up:
-        this.locationY += 1;
+        this.locationY -= 1;
         break;
       case Direction.Down:
-        this.locationY -= 1;
+        this.locationY += 1;
         break;
       case Direction.Left:
         this.locationX -= 1;
@@ -59,7 +83,32 @@ class Field {
   isHat() {
     return this._field[this.locationY][this.locationX] === hat;
   }
-  isHat() {
+  isHole() {
     return this._field[this.locationY][this.locationX] === hole;
   }
+
+  static generateField(height, width, prob = 0.1) {
+    const field = new Array(height).fill(0).map((el) => new Array(width));
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const random = Math.random();
+        field[y][x] = random < prob ? hole : fieldCharacter;
+      }
+    }
+
+    // Decide hat position
+    const hatLocation = {
+      x: Math.floor(Math.random() * width),
+      y: Math.floor(Math.random() * height),
+    };
+    while (hatLocation.x === 0 && hatLocation.y === 0) {
+      hatLocation.x = Math.floor(Math.random() * width);
+      hatLocation.y = Math.floor(Math.random() * height);
+    }
+    field[hatLocation.y][hatLocation.x] = hat;
+    return field;
+  }
 }
+
+const field = new Field(Field.generateField(10, 10, 0.2));
+field.runGame();
